@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pendaftaran;
 use App\Models\PemilikHewan;
 use App\Models\Pegawai;
+use App\Models\Hewan;
 use Illuminate\Http\Request;
 
 class PendaftaranController extends Controller
@@ -102,5 +103,14 @@ class PendaftaranController extends Controller
 
         return redirect()->route('pendaftaran.index')
             ->with('success', 'Pendaftaran berhasil dihapus');
+    }
+
+    /**
+     * Get hewan by pemilik (AJAX endpoint)
+     */
+    public function getHewanByPemilik($id_pemilik_hewan)
+    {
+        $hewans = Hewan::where('id_pemilik_hewan', $id_pemilik_hewan)->get();
+        return response()->json($hewans);
     }
 }

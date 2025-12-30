@@ -30,7 +30,7 @@
 
                     <div class="mb-3">
                         <label for="id_pendaftaran" class="form-label">Pendaftaran <span class="text-danger">*</span></label>
-                        <select class="form-select @error('id_pendaftaran') is-invalid @enderror" 
+                        <select class="form-select select2-pendaftaran @error('id_pendaftaran') is-invalid @enderror" 
                                 id="id_pendaftaran" 
                                 name="id_pendaftaran" 
                                 required>
@@ -46,11 +46,14 @@
                         @error('id_pendaftaran')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Ketik untuk mencari pendaftaran
+                        </small>
                     </div>
 
                     <div class="mb-3">
                         <label for="id_dokter_hewan" class="form-label">Dokter Hewan <span class="text-danger">*</span></label>
-                        <select class="form-select @error('id_dokter_hewan') is-invalid @enderror" 
+                        <select class="form-select select2-dokter @error('id_dokter_hewan') is-invalid @enderror" 
                                 id="id_dokter_hewan" 
                                 name="id_dokter_hewan" 
                                 required>
@@ -65,6 +68,9 @@
                         @error('id_dokter_hewan')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Ketik untuk mencari dokter berdasarkan nama atau SIP
+                        </small>
                     </div>
 
                     <div class="mb-3">
@@ -116,3 +122,25 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Initialize Select2 untuk pendaftaran
+    $('.select2-pendaftaran').select2({
+        theme: 'bootstrap-5',
+        placeholder: '-- Pilih Pendaftaran --',
+        allowClear: true,
+        width: '100%'
+    });
+
+    // Initialize Select2 untuk dokter hewan
+    $('.select2-dokter').select2({
+        theme: 'bootstrap-5',
+        placeholder: '-- Pilih Dokter Hewan --',
+        allowClear: true,
+        width: '100%'
+    });
+});
+</script>
+@endpush

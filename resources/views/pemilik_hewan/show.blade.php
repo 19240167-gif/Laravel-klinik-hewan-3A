@@ -54,13 +54,16 @@
 
         <!-- Daftar Hewan -->
         <div class="card mt-3">
-            <div class="card-header">
-                <h6 class="mb-0"><i class="bi bi-award"></i> Daftar Hewan</h6>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-award"></i> Daftar Hewan yang Dimiliki</h6>
+                <a href="{{ route('hewan.create') }}?pemilik={{ $pemilikHewan->id_pemilik_hewan }}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus"></i> Tambah Hewan
+                </a>
             </div>
             <div class="card-body">
                 @if($pemilikHewan->hewan->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-sm">
+                        <table class="table table-sm table-hover">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -68,23 +71,45 @@
                                     <th>Jenis</th>
                                     <th>Kelamin</th>
                                     <th>Umur</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($pemilikHewan->hewan as $hewan)
                                     <tr>
                                         <td>{{ $hewan->id_hewan }}</td>
-                                        <td>{{ $hewan->nama_hewan }}</td>
+                                        <td><strong>{{ $hewan->nama_hewan }}</strong></td>
                                         <td>{{ $hewan->jenis_hewan }}</td>
-                                        <td>{{ $hewan->jenis_kelamin }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ $hewan->jenis_kelamin == 'jantan' ? 'primary' : 'danger' }} badge-sm">
+                                                <i class="bi bi-{{ $hewan->jenis_kelamin == 'jantan' ? 'gender-male' : 'gender-female' }}"></i>
+                                                {{ ucfirst($hewan->jenis_kelamin) }}
+                                            </span>
+                                        </td>
                                         <td>{{ $hewan->umur ?? '-' }} tahun</td>
+                                        <td>
+                                            <a href="{{ route('hewan.show', $hewan->id_hewan) }}" class="btn btn-sm btn-info">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
+                    <div class="alert alert-success mb-0 mt-2">
+                        <i class="bi bi-check-circle"></i> <strong>Total: {{ $pemilikHewan->hewan->count() }} hewan</strong>
+                        <br>
+                        <small>Relasi One-to-Many: Satu pemilik dapat memiliki banyak hewan.</small>
+                    </div>
                 @else
-                    <p class="text-muted mb-0">Belum ada hewan terdaftar</p>
+                    <div class="text-center py-3">
+                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                        <p class="text-muted mb-2">Belum ada hewan terdaftar</p>
+                        <a href="{{ route('hewan.create') }}?pemilik={{ $pemilikHewan->id_pemilik_hewan }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus-circle"></i> Tambah Hewan Pertama
+                        </a>
+                    </div>
                 @endif
             </div>
         </div>

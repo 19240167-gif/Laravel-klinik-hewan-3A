@@ -6,6 +6,29 @@
     <title>@yield('title', 'Klinik Hewan')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <style>
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 38px;
+        }
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: #dee2e6;
+        }
+        .add-new-option {
+            background: #f8f9fa;
+            border-top: 2px solid #0d6efd;
+            padding: 10px;
+            margin: 0;
+            cursor: pointer;
+        }
+        .add-new-option:hover {
+            background: #e9ecef;
+        }
+    </style>
     @stack('styles')
 </head>
 <body>
@@ -32,6 +55,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('pemilik-hewan.index') }}">
                                     <i class="bi bi-people"></i> Pemilik Hewan
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('hewan.index') }}">
+                                    <i class="bi bi-award"></i> Hewan
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -101,6 +129,8 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @stack('scripts')
 </body>
 </html>

@@ -51,6 +51,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pemilik-hewan', PemilikHewanController::class);
         Route::resource('hewan', HewanController::class);
         Route::resource('pendaftaran', PendaftaranController::class);
+        
+        // AJAX endpoint untuk get hewan by pemilik
+        Route::get('api/hewan-by-pemilik/{id_pemilik_hewan}', [PendaftaranController::class, 'getHewanByPemilik'])->name('api.hewan-by-pemilik');
     });
 
     // Routes untuk Dokter dan Admin - Pemeriksaan
