@@ -19,6 +19,7 @@ class Obat extends Model
         'nama_obat',
         'jenis_obat',
         'harga_obat',
+        'stok',
         'tanggal_kadaluarsa'
     ];
 

@@ -21,6 +21,12 @@ class Pegawai extends Model
         'no_telepon_pegawai'
     ];
 
+    // Relasi ke User
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'nama_pegawai', 'name');
+    }
+
     // Relasi ke Pendaftaran (one to many)
     public function pendaftaran()
     {

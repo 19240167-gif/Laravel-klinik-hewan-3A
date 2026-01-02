@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Pemeriksaan;
 use App\Models\Pendaftaran;
 use App\Models\DokterHewan;
+use App\Models\Obat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PemeriksaanController extends Controller
 {
@@ -14,23 +16,78 @@ class PemeriksaanController extends Controller
      */
     public function index()
     {
-        $pemeriksaans = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'dokterHewan'])
-            ->orderBy('tanggal_periksa', 'desc')
+        // Ambil pendaftaran yang menunggu untuk diperiksa
+        $pendaftarans = Pendaftaran::with(['pemilikHewan', 'hewan', 'pegawai'])
+            ->where('status', 'menunggu')
+            ->orderBy('tanggal_daftar', 'desc')
             ->paginate(10);
-        return view('pemeriksaan.index', compact('pemeriksaans'));
+            
+        return view('pemeriksaan.index', compact('pendaftarans'));
+    }
+
+    /**
+     * Display history of examinations (for doctors)
+     */
+    public function riwayat()
+    {
+        $user = auth()->user();
+        
+        // Jika dokter, filter berdasarkan dokter yang login
+        if ($user->role === 'dokter') {
+            $dokter = DokterHewan::where('nama_dokter', $user->name)->first();
+            
+            if (!$dokter) {
+                return redirect()->route('pemeriksaan.index')
+                    ->with('error', 'Data dokter tidak ditemukan');
+            }
+            
+            $pemeriksaans = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'pendaftaran.hewan', 'dokterHewan'])
+                ->where('id_dokter_hewan', $dokter->id_dokter_hewan)
+                ->orderBy('tanggal_periksa', 'desc')
+                ->paginate(10);
+        } else {
+            // Admin bisa lihat semua riwayat
+            $pemeriksaans = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'pendaftaran.hewan', 'dokterHewan'])
+                ->orderBy('tanggal_periksa', 'desc')
+                ->paginate(10);
+        }
+        
+        return view('pemeriksaan.riwayat', compact('pemeriksaans'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        $pendaftarans = Pendaftaran::whereDoesntHave('pemeriksaan')
-            ->with('pemilikHewan')
+        $pendaftaranId = $request->query('pendaftaran');
+        
+        if (!$pendaftaranId) {
+            return redirect()->route('pemeriksaan.index')
+                ->with('error', 'Silakan pilih pendaftaran yang akan diperiksa');
+        }
+        
+        $pendaftaran = Pendaftaran::with('pemilikHewan')
+            ->where('id_pendaftaran', $pendaftaranId)
             ->where('status', 'menunggu')
-            ->get();
+            ->firstOrFail();
+        
+        // Cari dokter hewan dari user yang login
+        $dokterLogin = null;
+        if (auth()->user()->role === 'dokter') {
+            $dokterLogin = DokterHewan::where('nama_dokter', auth()->user()->name)->first();
+        }
+            
         $dokterHewans = DokterHewan::all();
-        return view('pemeriksaan.create', compact('pendaftarans', 'dokterHewans'));
+        $obats = Obat::where(function($query) {
+                $query->where('tanggal_kadaluarsa', '>', now())
+                      ->orWhereNull('tanggal_kadaluarsa');
+            })
+            ->where('stok', '>', 0)
+            ->orderBy('nama_obat')
+            ->get();
+        
+        return view('pemeriksaan.create', compact('pendaftaran', 'dokterHewans', 'dokterLogin', 'obats'));
     }
 
     /**
@@ -44,17 +101,70 @@ class PemeriksaanController extends Controller
             'id_dokter_hewan' => 'required|exists:dokter_hewan,id_dokter_hewan',
             'tanggal_periksa' => 'required|date',
             'diagnosa' => 'nullable|string',
-            'tindakan' => 'nullable|string'
+            'tindakan' => 'nullable|string',
+            'biaya_tindakan' => 'nullable|integer|min:0',
+            'obat' => 'nullable|array',
+            'obat.*.id_obat' => 'required_with:obat|exists:obat,id_obat',
+            'obat.*.jumlah' => 'required_with:obat|integer|min:1'
         ]);
 
-        Pemeriksaan::create($validated);
+        DB::beginTransaction();
+        try {
+            // Validasi stok obat sebelum menyimpan
+            if (isset($validated['obat']) && count($validated['obat']) > 0) {
+                foreach ($validated['obat'] as $obatData) {
+                    if (!empty($obatData['id_obat']) && $obatData['jumlah'] > 0) {
+                        $obat = Obat::find($obatData['id_obat']);
+                        if (!$obat) {
+                            throw new \Exception("Obat dengan ID {$obatData['id_obat']} tidak ditemukan");
+                        }
+                        if ($obat->stok < $obatData['jumlah']) {
+                            throw new \Exception("Stok obat {$obat->nama_obat} tidak mencukupi. Stok tersedia: {$obat->stok}, diminta: {$obatData['jumlah']}");
+                        }
+                    }
+                }
+            }
 
-        // Update status pendaftaran menjadi selesai
-        $pendaftaran = Pendaftaran::find($request->id_pendaftaran);
-        $pendaftaran->update(['status' => 'selesai']);
+            $pemeriksaan = Pemeriksaan::create([
+                'id_pemeriksaan' => $validated['id_pemeriksaan'],
+                'id_pendaftaran' => $validated['id_pendaftaran'],
+                'id_dokter_hewan' => $validated['id_dokter_hewan'],
+                'tanggal_periksa' => $validated['tanggal_periksa'],
+                'diagnosa' => $validated['diagnosa'] ?? null,
+                'tindakan' => $validated['tindakan'] ?? null,
+                'biaya_tindakan' => $validated['biaya_tindakan'] ?? 0,
+            ]);
 
-        return redirect()->route('pemeriksaan.index')
-            ->with('success', 'Data pemeriksaan berhasil ditambahkan');
+            // Simpan obat yang diberikan dan kurangi stok
+            if (isset($validated['obat']) && count($validated['obat']) > 0) {
+                foreach ($validated['obat'] as $obatData) {
+                    if (!empty($obatData['id_obat']) && $obatData['jumlah'] > 0) {
+                        // Attach ke pivot table
+                        $pemeriksaan->obats()->attach($obatData['id_obat'], [
+                            'jumlah' => $obatData['jumlah']
+                        ]);
+                        
+                        // Kurangi stok obat
+                        $obat = Obat::find($obatData['id_obat']);
+                        $obat->decrement('stok', $obatData['jumlah']);
+                    }
+                }
+            }
+
+            // Update status pendaftaran menjadi selesai
+            $pendaftaran = Pendaftaran::find($request->id_pendaftaran);
+            $pendaftaran->update(['status' => 'selesai']);
+
+            DB::commit();
+
+            return redirect()->route('pemeriksaan.riwayat')
+                ->with('success', 'Data pemeriksaan berhasil ditambahkan');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal menyimpan pemeriksaan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -62,7 +172,7 @@ class PemeriksaanController extends Controller
      */
     public function show(string $id)
     {
-        $pemeriksaan = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'dokterHewan', 'pembayaran'])
+        $pemeriksaan = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'pendaftaran.hewan', 'dokterHewan', 'pembayaran', 'obats'])
             ->findOrFail($id);
         return view('pemeriksaan.show', compact('pemeriksaan'));
     }
@@ -72,10 +182,18 @@ class PemeriksaanController extends Controller
      */
     public function edit(string $id)
     {
-        $pemeriksaan = Pemeriksaan::findOrFail($id);
-        $pendaftarans = Pendaftaran::with('pemilikHewan')->get();
-        $dokterHewans = DokterHewan::all();
-        return view('pemeriksaan.edit', compact('pemeriksaan', 'pendaftarans', 'dokterHewans'));
+        $pemeriksaan = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'dokterHewan'])->findOrFail($id);
+        
+        // Cek otorisasi: hanya dokter yang bersangkutan atau admin yang bisa edit
+        $user = auth()->user();
+        if ($user->role === 'dokter') {
+            if ($pemeriksaan->dokterHewan->nama_dokter !== $user->name) {
+                return redirect()->route('pemeriksaan.riwayat')
+                    ->with('error', 'Anda tidak memiliki akses untuk mengedit pemeriksaan ini');
+            }
+        }
+        
+        return view('pemeriksaan.edit', compact('pemeriksaan'));
     }
 
     /**
@@ -86,8 +204,6 @@ class PemeriksaanController extends Controller
         $pemeriksaan = Pemeriksaan::findOrFail($id);
 
         $validated = $request->validate([
-            'id_pendaftaran' => 'required|exists:pendaftaran,id_pendaftaran',
-            'id_dokter_hewan' => 'required|exists:dokter_hewan,id_dokter_hewan',
             'tanggal_periksa' => 'required|date',
             'diagnosa' => 'nullable|string',
             'tindakan' => 'nullable|string'
@@ -95,7 +211,7 @@ class PemeriksaanController extends Controller
 
         $pemeriksaan->update($validated);
 
-        return redirect()->route('pemeriksaan.index')
+        return redirect()->route('pemeriksaan.riwayat')
             ->with('success', 'Data pemeriksaan berhasil diperbarui');
     }
 
@@ -105,9 +221,16 @@ class PemeriksaanController extends Controller
     public function destroy(string $id)
     {
         $pemeriksaan = Pemeriksaan::findOrFail($id);
+        
+        // Kembalikan status pendaftaran ke 'menunggu'
+        $pendaftaran = Pendaftaran::find($pemeriksaan->id_pendaftaran);
+        if ($pendaftaran) {
+            $pendaftaran->update(['status' => 'menunggu']);
+        }
+        
         $pemeriksaan->delete();
 
-        return redirect()->route('pemeriksaan.index')
-            ->with('success', 'Data pemeriksaan berhasil dihapus');
+        return redirect()->route('pemeriksaan.riwayat')
+            ->with('success', 'Data pemeriksaan berhasil dihapus dan status pendaftaran dikembalikan ke menunggu');
     }
 }

@@ -49,6 +49,23 @@
                                     <i class="bi bi-speedometer2"></i> Dashboard
                                 </a>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="manajemenDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-gear"></i> Manajemen
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('pegawai.index') }}">
+                                            <i class="bi bi-person-badge"></i> Pegawai
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('dokter-hewan.index') }}">
+                                            <i class="bi bi-hospital"></i> Dokter Hewan
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         @endif
                         
                         @if(in_array(auth()->user()->role, ['admin', 'pegawai']))
@@ -67,12 +84,49 @@
                                     <i class="bi bi-clipboard-check"></i> Pendaftaran
                                 </a>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-cash-coin"></i> Pembayaran
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('pembayaran.pending') }}">
+                                            <i class="bi bi-clock-history"></i> Belum Dibayar
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('pembayaran.index') }}">
+                                            <i class="bi bi-receipt"></i> Riwayat Pembayaran
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         @endif
 
                         @if(in_array(auth()->user()->role, ['admin', 'dokter']))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('pemeriksaan.index') }}">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                     <i class="bi bi-clipboard2-pulse"></i> Pemeriksaan
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('pemeriksaan.index') }}">
+                                            <i class="bi bi-list-task"></i> Daftar Tunggu
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('pemeriksaan.riwayat') }}">
+                                            <i class="bi bi-clock-history"></i> Riwayat Pemeriksaan
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+
+                        @if(in_array(auth()->user()->role, ['admin', 'pegawai', 'dokter']))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('obat.index') }}">
+                                    <i class="bi bi-capsule"></i> Obat
                                 </a>
                             </li>
                         @endif

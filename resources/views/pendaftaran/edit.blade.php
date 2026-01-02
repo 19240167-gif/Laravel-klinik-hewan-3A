@@ -26,7 +26,7 @@
 
                     <div class="mb-3">
                         <label for="id_pemilik_hewan" class="form-label">Pemilik Hewan <span class="text-danger">*</span></label>
-                        <select class="form-select @error('id_pemilik_hewan') is-invalid @enderror" 
+                        <select class="form-select select2-pemilik @error('id_pemilik_hewan') is-invalid @enderror" 
                                 id="id_pemilik_hewan" 
                                 name="id_pemilik_hewan" 
                                 required>
@@ -41,6 +41,31 @@
                         @error('id_pemilik_hewan')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Ketik untuk mencari pemilik hewan
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_hewan" class="form-label">Hewan <span class="text-danger">*</span></label>
+                        <select class="form-select select2-hewan @error('id_hewan') is-invalid @enderror" 
+                                id="id_hewan" 
+                                name="id_hewan" 
+                                required>
+                            <option value="">-- Pilih Hewan --</option>
+                            @foreach($hewans as $hewan)
+                                <option value="{{ $hewan->id_hewan }}" 
+                                        {{ old('id_hewan', $pendaftaran->id_hewan) == $hewan->id_hewan ? 'selected' : '' }}>
+                                    {{ $hewan->id_hewan }} - {{ $hewan->nama_hewan }} ({{ $hewan->jenis_hewan }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_hewan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Pilih pemilik hewan terlebih dahulu untuk memuat daftar hewan
+                        </small>
                     </div>
 
                     <div class="mb-3">
@@ -114,4 +139,76 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+@endpush
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize Select2
+        $('.select2-pemilik').select2({
+            theme: 'bootstrap-5',
+            placeholder: '-- Pilih Pemilik Hewan --',
+            allowClear: true
+        });
+
+        $('.select2-hewan').select2({
+            theme: 'bootstrap-5',
+            placeholder: '-- Pilih Hewan --',
+            allowClear: true
+        });
+
+        // AJAX untuk load hewan berdasarkan pemilik
+        var pemilikSelect = $('#id_pemilik_hewan');
+        var hewanSelect = $('#id_hewan');
+
+        pemilikSelect.on('change', function() {
+            var pemilikId = $(this).val();
+            
+            if (pemilikId) {
+                $.ajax({
+                    url: '/pendaftaran/hewan/' + pemilikId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        hewanSelect.empty().append('<option value=\"\">-- Pilih Hewan --</option>');
+                        
+                        if (data.length > 0) {
+                            $.each(data, function(index, hewan) {
+                                var option = new Option(
+                                    hewan.id_hewan + ' - ' + hewan.nama_hewan + ' (' + hewan.jenis_hewan + ')',
+                                    hewan.id_hewan,
+                                    false,
+                                    false
+                                );
+                                hewanSelect.append(option);
+                            });
+                        } else {
+                            hewanSelect.append('<option value=\"\">Tidak ada hewan</option>');
+                        }
+                        
+                        hewanSelect.trigger('change');
+                    },
+                    error: function() {
+                        alert('Gagal memuat data hewan');
+                    }
+                });
+            } else {
+                hewanSelect.empty().append('<option value=\"\">-- Pilih Pemilik Hewan Terlebih Dahulu --</option>');
+            }
+        });
+
+        @if(old('id_hewan'))
+            setTimeout(function() {
+                $('#id_hewan').val('{{ old("id_hewan") }}').trigger('change');
+            }, 500);
+        @endif
+    });
+</script>
+@endpush
 @endsection

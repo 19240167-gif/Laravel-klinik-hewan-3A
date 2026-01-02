@@ -17,6 +17,7 @@ class Pendaftaran extends Model
     protected $fillable = [
         'id_pendaftaran',
         'id_pemilik_hewan',
+        'id_hewan',
         'id_pegawai',
         'tanggal_daftar',
         'status',
@@ -31,6 +32,12 @@ class Pendaftaran extends Model
     public function pemilikHewan()
     {
         return $this->belongsTo(PemilikHewan::class, 'id_pemilik_hewan', 'id_pemilik_hewan');
+    }
+
+    // Relasi ke Hewan (many to one)
+    public function hewan()
+    {
+        return $this->belongsTo(Hewan::class, 'id_hewan', 'id_hewan');
     }
 
     // Relasi ke Pegawai (many to one)

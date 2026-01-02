@@ -15,7 +15,7 @@ class PendaftaranController extends Controller
      */
     public function index()
     {
-        $pendaftarans = Pendaftaran::with(['pemilikHewan', 'pegawai'])
+        $pendaftarans = Pendaftaran::with(['pemilikHewan', 'hewan', 'pegawai'])
             ->orderBy('tanggal_daftar', 'desc')
             ->paginate(10);
         return view('pendaftaran.index', compact('pendaftarans'));
@@ -27,8 +27,7 @@ class PendaftaranController extends Controller
     public function create()
     {
         $pemilikHewans = PemilikHewan::all();
-        $pegawais = Pegawai::all();
-        return view('pendaftaran.create', compact('pemilikHewans', 'pegawais'));
+        return view('pendaftaran.create', compact('pemilikHewans'));
     }
 
     /**
@@ -39,11 +38,22 @@ class PendaftaranController extends Controller
         $validated = $request->validate([
             'id_pendaftaran' => 'required|string|max:8|unique:pendaftaran,id_pendaftaran',
             'id_pemilik_hewan' => 'required|exists:pemilik_hewan,id_pemilik_hewan',
-            'id_pegawai' => 'required|exists:pegawai,id_pegawai',
+            'id_hewan' => 'required|exists:hewan,id_hewan',
             'tanggal_daftar' => 'required|date',
-            'status' => 'required|string|max:10',
             'keluhan' => 'nullable|string'
         ]);
+
+        // Ambil pegawai berdasarkan user yang login
+        $pegawai = Pegawai::where('nama_pegawai', auth()->user()->name)->first();
+        
+        if (!$pegawai) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Data pegawai tidak ditemukan untuk user ini');
+        }
+
+        $validated['id_pegawai'] = $pegawai->id_pegawai;
+        $validated['status'] = 'menunggu'; // Status otomatis menunggu saat dibuat
 
         Pendaftaran::create($validated);
 
@@ -66,10 +76,17 @@ class PendaftaranController extends Controller
      */
     public function edit(string $id)
     {
-        $pendaftaran = Pendaftaran::findOrFail($id);
+        $pendaftaran = Pendaftaran::with('hewan')->findOrFail($id);
         $pemilikHewans = PemilikHewan::all();
         $pegawais = Pegawai::all();
-        return view('pendaftaran.edit', compact('pendaftaran', 'pemilikHewans', 'pegawais'));
+        
+        // Load semua hewan dari pemilik yang dipilih
+        $hewans = [];
+        if ($pendaftaran->id_pemilik_hewan) {
+            $hewans = Hewan::where('id_pemilik_hewan', $pendaftaran->id_pemilik_hewan)->get();
+        }
+        
+        return view('pendaftaran.edit', compact('pendaftaran', 'pemilikHewans', 'pegawais', 'hewans'));
     }
 
     /**
@@ -81,6 +98,7 @@ class PendaftaranController extends Controller
 
         $validated = $request->validate([
             'id_pemilik_hewan' => 'required|exists:pemilik_hewan,id_pemilik_hewan',
+            'id_hewan' => 'required|exists:hewan,id_hewan',
             'id_pegawai' => 'required|exists:pegawai,id_pegawai',
             'tanggal_daftar' => 'required|date',
             'status' => 'required|string|max:10',

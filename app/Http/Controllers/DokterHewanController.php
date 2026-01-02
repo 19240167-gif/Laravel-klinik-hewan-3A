@@ -1,0 +1,129 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\DokterHewan;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+
+class DokterHewanController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $dokters = DokterHewan::orderBy('created_at', 'desc')->paginate(10);
+        return view('dokter.index', compact('dokters'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('dokter.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'id_dokter_hewan' => 'required|string|max:8|unique:dokter_hewan,id_dokter_hewan',
+            'nama_dokter' => 'required|string|max:25',
+            'no_sip' => 'nullable|string|max:20',
+            'biaya_periksa' => 'required|integer|min:0',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Buat user account untuk dokter
+            $user = User::create([
+                'name' => $validated['nama_dokter'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => 'dokter',
+            ]);
+
+            // Buat data dokter hewan
+            DokterHewan::create([
+                'id_dokter_hewan' => $validated['id_dokter_hewan'],
+                'nama_dokter' => $validated['nama_dokter'],
+                'no_sip' => $validated['no_sip'],
+                'biaya_periksa' => $validated['biaya_periksa'],
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('dokter-hewan.index')
+                ->with('success', 'Data dokter hewan berhasil ditambahkan beserta akun login');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal menambahkan data dokter: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $dokter = DokterHewan::with('pemeriksaan')->findOrFail($id);
+        return view('dokter.show', compact('dokter'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $dokter = DokterHewan::findOrFail($id);
+        return view('dokter.edit', compact('dokter'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $dokter = DokterHewan::findOrFail($id);
+
+        $validated = $request->validate([
+            'nama_dokter' => 'required|string|max:25',
+            'no_sip' => 'nullable|string|max:20',
+            'biaya_periksa' => 'required|integer|min:0',
+        ]);
+
+        $dokter->update($validated);
+
+        return redirect()->route('dokter-hewan.index')
+            ->with('success', 'Data dokter hewan berhasil diperbarui');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $dokter = DokterHewan::findOrFail($id);
+        
+        // Cek apakah dokter masih memiliki pemeriksaan
+        if ($dokter->pemeriksaan()->count() > 0) {
+            return redirect()->route('dokter-hewan.index')
+                ->with('error', 'Dokter tidak dapat dihapus karena masih memiliki data pemeriksaan');
+        }
+
+        $dokter->delete();
+
+        return redirect()->route('dokter-hewan.index')
+            ->with('success', 'Data dokter hewan berhasil dihapus');
+    }
+}

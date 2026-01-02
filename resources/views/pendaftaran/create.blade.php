@@ -27,7 +27,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-
+                    
                     <div class="mb-3">
                         <label for="id_pemilik_hewan" class="form-label">Pemilik Hewan <span class="text-danger">*</span></label>
                         <select class="form-select select2-pemilik @error('id_pemilik_hewan') is-invalid @enderror" 
@@ -71,22 +71,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="id_pegawai" class="form-label">Pegawai <span class="text-danger">*</span></label>
-                        <select class="form-select @error('id_pegawai') is-invalid @enderror" 
-                                id="id_pegawai" 
-                                name="id_pegawai" 
-                                required>
-                            <option value="">-- Pilih Pegawai --</option>
-                            @foreach($pegawais as $pegawai)
-                                <option value="{{ $pegawai->id_pegawai }}" 
-                                        {{ old('id_pegawai') == $pegawai->id_pegawai ? 'selected' : '' }}>
-                                    {{ $pegawai->id_pegawai }} - {{ $pegawai->nama_pegawai }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('id_pegawai')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label class="form-label">Pegawai</label>
+                        <input type="text" 
+                               class="form-control" 
+                               value="{{ auth()->user()->name }}" 
+                               disabled>
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Pegawai otomatis terisi berdasarkan user yang login
+                        </small>
                     </div>
 
                     <div class="mb-3">
@@ -103,18 +95,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                        <select class="form-select @error('status') is-invalid @enderror" 
-                                id="status" 
-                                name="status" 
-                                required>
-                            <option value="">-- Pilih Status --</option>
-                            <option value="menunggu" {{ old('status') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
-                            <option value="selesai" {{ old('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                        </select>
-                        @error('status')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label class="form-label">Status</label>
+                        <input type="text" 
+                               class="form-control" 
+                               value="Menunggu" 
+                               disabled>
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Status otomatis 'Menunggu' dan akan berubah menjadi 'Selesai' setelah dokter melakukan pemeriksaan
+                        </small>
                     </div>
 
                     <div class="mb-3">

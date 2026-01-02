@@ -20,6 +20,7 @@ class Pemeriksaan extends Model
         'id_dokter_hewan',
         'diagnosa',
         'tindakan',
+        'biaya_tindakan',
         'tanggal_periksa'
     ];
 
@@ -43,5 +44,19 @@ class Pemeriksaan extends Model
     public function pembayaran()
     {
         return $this->hasOne(Pembayaran::class, 'id_pemeriksaan', 'id_pemeriksaan');
+    }
+
+    // Relasi ke PemeriksaanObat (one to many)
+    public function pemeriksaanObat()
+    {
+        return $this->hasMany(PemeriksaanObat::class, 'id_pemeriksaan', 'id_pemeriksaan');
+    }
+
+    // Relasi ke Obat melalui pivot table
+    public function obats()
+    {
+        return $this->belongsToMany(Obat::class, 'pemeriksaan_obat', 'id_pemeriksaan', 'id_obat')
+            ->withPivot('jumlah')
+            ->withTimestamps();
     }
 }

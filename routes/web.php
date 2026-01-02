@@ -5,6 +5,10 @@ use App\Http\Controllers\PemilikHewanController;
 use App\Http\Controllers\HewanController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PemeriksaanController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\DokterHewanController;
+use App\Http\Controllers\ObatController;
+use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\Auth\LoginController;
 
 /*
@@ -46,6 +50,17 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard');
     })->middleware('role:admin')->name('dashboard');
 
+    // Routes khusus Admin - Manajemen Pegawai & Dokter
+    Route::middleware(['role:admin'])->group(function () {
+        Route::resource('pegawai', PegawaiController::class);
+        Route::resource('dokter-hewan', DokterHewanController::class);
+    });
+
+    // Routes untuk Admin, Pegawai, dan Dokter - CRUD Obat
+    Route::middleware(['role:admin,pegawai,dokter'])->group(function () {
+        Route::resource('obat', ObatController::class);
+    });
+
     // Routes untuk Pegawai dan Admin - CRUD Pemilik Hewan (Offline)
     Route::middleware(['role:admin,pegawai'])->group(function () {
         Route::resource('pemilik-hewan', PemilikHewanController::class);
@@ -54,10 +69,15 @@ Route::middleware(['auth'])->group(function () {
         
         // AJAX endpoint untuk get hewan by pemilik
         Route::get('api/hewan-by-pemilik/{id_pemilik_hewan}', [PendaftaranController::class, 'getHewanByPemilik'])->name('api.hewan-by-pemilik');
+        
+        // Pembayaran routes
+        Route::get('pembayaran/pending', [PembayaranController::class, 'pending'])->name('pembayaran.pending');
+        Route::resource('pembayaran', PembayaranController::class);
     });
 
     // Routes untuk Dokter dan Admin - Pemeriksaan
     Route::middleware(['role:admin,dokter'])->group(function () {
+        Route::get('pemeriksaan/riwayat', [PemeriksaanController::class, 'riwayat'])->name('pemeriksaan.riwayat');
         Route::resource('pemeriksaan', PemeriksaanController::class);
     });
 });
