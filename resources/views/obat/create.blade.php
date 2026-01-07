@@ -10,7 +10,11 @@
                 <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Tambah Obat</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('obat.store') }}\" method=\"POST\">\n                    @csrf\n                    \n                    <div class=\"mb-3\">\n                        <label for=\"nama_obat\" class=\"form-label\">Nama Obat <span class=\"text-danger\">*</span></label>
+                <form action="{{ route('obat.store') }}" method="POST">
+                    @csrf
+                    
+                    <div class="mb-3">
+                        <label for="nama_obat" class="form-label">Nama Obat <span class="text-danger">*</span></label>
                         <input type="text" 
                                class="form-control @error('nama_obat') is-invalid @enderror" 
                                id="nama_obat" 
