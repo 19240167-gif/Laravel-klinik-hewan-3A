@@ -10,16 +10,16 @@
                 <h5 class="mb-0"><i class="bi bi-pencil"></i> Edit Pemilik Hewan</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('pemilik-hewan.update', $pemilikHewan->id_pemilik_hewan) }}" method="POST">
+                <form action="{{ route('pemilik-hewan.update', $pemilikHewan->id_pemilik) }}" method="POST">
                     @csrf
                     @method('PUT')
                     
                     <div class="mb-3">
-                        <label for="id_pemilik_hewan" class="form-label">ID Pemilik Hewan</label>
+                        <label for="id_pemilik" class="form-label">ID Pemilik Hewan</label>
                         <input type="text" 
                                class="form-control" 
-                               id="id_pemilik_hewan" 
-                               value="{{ $pemilikHewan->id_pemilik_hewan }}"
+                               id="id_pemilik" 
+                               value="{{ $pemilikHewan->id_pemilik }}"
                                disabled>
                         <small class="text-muted">ID tidak dapat diubah</small>
                     </div>

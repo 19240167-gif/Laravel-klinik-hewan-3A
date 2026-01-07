@@ -4,18 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\GeneratesCustomId;
 
 class PemilikHewan extends Model
 {
-    use HasFactory;
+    use HasFactory, GeneratesCustomId;
 
     protected $table = 'pemilik_hewan';
-    protected $primaryKey = 'id_pemilik_hewan';
+    protected $primaryKey = 'id_pemilik';
     public $incrementing = false;
     protected $keyType = 'string';
+    
+    // Custom ID Configuration
+    protected $idPrefix = 'PMH';
+    protected $idLength = 3;
 
     protected $fillable = [
-        'id_pemilik_hewan',
+        'id_pemilik',
         'user_id',
         'nama_pemilik',
         'no_tlp',
@@ -32,12 +37,12 @@ class PemilikHewan extends Model
     // Relasi ke Hewan (one to many)
     public function hewan()
     {
-        return $this->hasMany(Hewan::class, 'id_pemilik_hewan', 'id_pemilik_hewan');
+        return $this->hasMany(Hewan::class, 'id_pemilik', 'id_pemilik');
     }
 
     // Relasi ke Pendaftaran (one to many)
     public function pendaftaran()
     {
-        return $this->hasMany(Pendaftaran::class, 'id_pemilik_hewan', 'id_pemilik_hewan');
+        return $this->hasMany(Pendaftaran::class, 'id_pemilik', 'id_pemilik');
     }
 }

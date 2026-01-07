@@ -33,7 +33,6 @@ class PegawaiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_pegawai' => 'required|string|max:8|unique:pegawai,id_pegawai',
             'nama_pegawai' => 'required|string|max:25',
             'jenis_kelamin' => 'required|in:laki-laki,perempuan',
             'no_telepon_pegawai' => 'nullable|string|max:13',
@@ -51,9 +50,8 @@ class PegawaiController extends Controller
                 'role' => 'pegawai',
             ]);
 
-            // Buat data pegawai
+            // Buat data pegawai - ID auto generate
             Pegawai::create([
-                'id_pegawai' => $validated['id_pegawai'],
                 'nama_pegawai' => $validated['nama_pegawai'],
                 'jenis_kelamin' => $validated['jenis_kelamin'],
                 'no_telepon_pegawai' => $validated['no_telepon_pegawai'],

@@ -14,38 +14,23 @@
                     @csrf
                     
                     <div class="mb-3">
-                        <label for="id_pendaftaran" class="form-label">ID Pendaftaran <span class="text-danger">*</span></label>
-                        <input type="text" 
-                               class="form-control @error('id_pendaftaran') is-invalid @enderror" 
-                               id="id_pendaftaran" 
-                               name="id_pendaftaran" 
-                               value="{{ old('id_pendaftaran') }}"
-                               maxlength="8"
-                               required>
-                        <small class="text-muted">Maksimal 8 karakter</small>
-                        @error('id_pendaftaran')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="id_pemilik_hewan" class="form-label">Pemilik Hewan <span class="text-danger">*</span></label>
-                        <select class="form-select select2-pemilik @error('id_pemilik_hewan') is-invalid @enderror" 
-                                id="id_pemilik_hewan" 
-                                name="id_pemilik_hewan" 
+                        <label for="id_pemilik" class="form-label">Pemilik Hewan <span class="text-danger">*</span></label>
+                        <select class="form-select select2-pemilik @error('id_pemilik') is-invalid @enderror" 
+                                id="id_pemilik" 
+                                name="id_pemilik" 
                                 required>
                             <option value="">-- Pilih Pemilik Hewan --</option>
                             @foreach($pemilikHewans as $pemilik)
-                                <option value="{{ $pemilik->id_pemilik_hewan }}" 
-                                        {{ old('id_pemilik_hewan') == $pemilik->id_pemilik_hewan ? 'selected' : '' }}>
-                                    {{ $pemilik->id_pemilik_hewan }} - {{ $pemilik->nama_pemilik }}
+                                <option value="{{ $pemilik->id_pemilik }}" 
+                                        {{ old('id_pemilik') == $pemilik->id_pemilik ? 'selected' : '' }}>
+                                    {{ $pemilik->id_pemilik }} - {{ $pemilik->nama_pemilik }}
                                     @if($pemilik->no_tlp)
                                         ({{ $pemilik->no_tlp }})
                                     @endif
                                 </option>
                             @endforeach
                         </select>
-                        @error('id_pemilik_hewan')
+                        @error('id_pemilik')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         <small class="text-muted">
@@ -151,7 +136,7 @@ $(document).ready(function() {
     });
 
     // Event ketika pemilik dipilih
-    $('#id_pemilik_hewan').on('change', function() {
+    $('#id_pemilik').on('change', function() {
         var idPemilik = $(this).val();
         var hewanSelect = $('#id_hewan');
         
@@ -199,8 +184,8 @@ $(document).ready(function() {
     });
 
     // Auto-trigger jika ada old value (dari validation error)
-    @if(old('id_pemilik_hewan'))
-        $('#id_pemilik_hewan').trigger('change');
+    @if(old('id_pemilik'))
+        $('#id_pemilik').trigger('change');
         @if(old('id_hewan'))
             setTimeout(function() {
                 $('#id_hewan').val('{{ old("id_hewan") }}').trigger('change');

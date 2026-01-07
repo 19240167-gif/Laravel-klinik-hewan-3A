@@ -10,16 +10,16 @@
                 <h5 class="mb-0"><i class="bi bi-pencil"></i> Edit Data Dokter Hewan</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('dokter-hewan.update', $dokter->id_dokter_hewan) }}" method="POST">
+                <form action="{{ route('dokter-hewan.update', $dokter->id_dokter) }}" method="POST">
                     @csrf
                     @method('PUT')
                     
                     <div class="mb-3">
-                        <label for="id_dokter_hewan" class="form-label">ID Dokter Hewan</label>
+                        <label for="id_dokter" class="form-label">ID Dokter Hewan</label>
                         <input type="text" 
                                class="form-control" 
-                               id="id_dokter_hewan" 
-                               value="{{ $dokter->id_dokter_hewan }}"
+                               id="id_dokter" 
+                               value="{{ $dokter->id_dokter }}"
                                disabled>
                         <small class="text-muted">ID tidak dapat diubah</small>
                     </div>

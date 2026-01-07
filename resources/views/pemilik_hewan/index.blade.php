@@ -26,21 +26,21 @@
                 <tbody>
                     @forelse($pemilikHewans as $pemilik)
                         <tr>
-                            <td>{{ $pemilik->id_pemilik_hewan }}</td>
+                            <td>{{ $pemilik->id_pemilik }}</td>
                             <td>{{ $pemilik->nama_pemilik }}</td>
                             <td>{{ $pemilik->no_tlp ?? '-' }}</td>
                             <td>{{ Str::limit($pemilik->alamat ?? '-', 50) }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('pemilik-hewan.show', $pemilik->id_pemilik_hewan) }}" 
+                                    <a href="{{ route('pemilik-hewan.show', $pemilik->id_pemilik) }}" 
                                        class="btn btn-info" title="Detail">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ route('pemilik-hewan.edit', $pemilik->id_pemilik_hewan) }}" 
+                                    <a href="{{ route('pemilik-hewan.edit', $pemilik->id_pemilik) }}" 
                                        class="btn btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="{{ route('pemilik-hewan.destroy', $pemilik->id_pemilik_hewan) }}" 
+                                    <form action="{{ route('pemilik-hewan.destroy', $pemilik->id_pemilik) }}" 
                                           method="POST" class="d-inline"
                                           onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                         @csrf

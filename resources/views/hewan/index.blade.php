@@ -41,7 +41,7 @@
                             </td>
                             <td>{{ $hewan->umur ? $hewan->umur . ' tahun' : '-' }}</td>
                             <td>
-                                <a href="{{ route('pemilik-hewan.show', $hewan->id_pemilik_hewan) }}" class="text-decoration-none">
+                                <a href="{{ route('pemilik-hewan.show', $hewan->id_pemilik) }}" class="text-decoration-none">
                                     {{ $hewan->pemilikHewan->nama_pemilik ?? '-' }}
                                 </a>
                             </td>

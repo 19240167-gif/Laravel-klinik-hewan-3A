@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('hewan', function (Blueprint $table) {
-            $table->char('id_hewan', 8)->primary();
+            $table->string('id_hewan', 10)->primary();
             $table->string('nama_hewan', 10)->nullable();
             $table->string('jenis_hewan', 10)->nullable();
             $table->enum('jenis_kelamin', ['jantan','betina'])->nullable();
             $table->string('umur', 2)->nullable();
-            $table->char('id_pemilik_hewan', 8)->nullable();
+            $table->string('id_pemilik', 10)->nullable();
             $table->timestamps();
             
-            $table->foreign('id_pemilik_hewan')->references('id_pemilik_hewan')->on('pemilik_hewan');
+            $table->foreign('id_pemilik')->references('id_pemilik')->on('pemilik_hewan');
         });
     }
 

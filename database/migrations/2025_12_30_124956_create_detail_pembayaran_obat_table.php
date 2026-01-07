@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detail_pembayaran_obat', function (Blueprint $table) {
-            $table->char('id_pembayaran', 8);
-            $table->char('id_obat', 8);
+            $table->string('id_detail', 10)->primary();
+            $table->string('id_pembayaran', 10);
+            $table->string('id_obat', 10);
             $table->integer('jumlah')->nullable();
             $table->integer('subtotal')->nullable();
             $table->timestamps();

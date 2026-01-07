@@ -42,7 +42,7 @@ class PemeriksaanController extends Controller
             }
             
             $pemeriksaans = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'pendaftaran.hewan', 'dokterHewan'])
-                ->where('id_dokter_hewan', $dokter->id_dokter_hewan)
+                ->where('id_dokter', $dokter->id_dokter)
                 ->orderBy('tanggal_periksa', 'desc')
                 ->paginate(10);
         } else {
@@ -96,13 +96,12 @@ class PemeriksaanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_pemeriksaan' => 'required|string|max:8|unique:pemeriksaan,id_pemeriksaan',
             'id_pendaftaran' => 'required|exists:pendaftaran,id_pendaftaran',
-            'id_dokter_hewan' => 'required|exists:dokter_hewan,id_dokter_hewan',
+            'id_dokter' => 'required|exists:dokter_hewan,id_dokter',
             'tanggal_periksa' => 'required|date',
             'diagnosa' => 'nullable|string',
             'tindakan' => 'nullable|string',
-            'biaya_tindakan' => 'nullable|integer|min:0',
+            'biaya_tindakan' => 'required|integer|min:0',
             'obat' => 'nullable|array',
             'obat.*.id_obat' => 'required_with:obat|exists:obat,id_obat',
             'obat.*.jumlah' => 'required_with:obat|integer|min:1'
@@ -126,9 +125,8 @@ class PemeriksaanController extends Controller
             }
 
             $pemeriksaan = Pemeriksaan::create([
-                'id_pemeriksaan' => $validated['id_pemeriksaan'],
                 'id_pendaftaran' => $validated['id_pendaftaran'],
-                'id_dokter_hewan' => $validated['id_dokter_hewan'],
+                'id_dokter' => $validated['id_dokter'],
                 'tanggal_periksa' => $validated['tanggal_periksa'],
                 'diagnosa' => $validated['diagnosa'] ?? null,
                 'tindakan' => $validated['tindakan'] ?? null,

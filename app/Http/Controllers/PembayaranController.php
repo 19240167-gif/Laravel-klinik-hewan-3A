@@ -50,10 +50,7 @@ class PembayaranController extends Controller
             ->where('id_pemeriksaan', $pemeriksaanId)
             ->firstOrFail();
         
-        // Biaya pemeriksaan dokter
-        $biayaPeriksa = $pemeriksaan->dokterHewan->biaya_periksa ?? 0;
-        
-        // Biaya tindakan medis
+        // Biaya tindakan medis (termasuk biaya pemeriksaan)
         $biayaTindakan = $pemeriksaan->biaya_tindakan ?? 0;
         
         // Hitung total obat
@@ -63,9 +60,9 @@ class PembayaranController extends Controller
         }
         
         // Total keseluruhan
-        $totalBayar = $biayaPeriksa + $biayaTindakan + $biayaObat;
+        $totalBayar = $biayaTindakan + $biayaObat;
         
-        return view('pembayaran.create', compact('pemeriksaan', 'biayaPeriksa', 'biayaTindakan', 'biayaObat', 'totalBayar'));
+        return view('pembayaran.create', compact('pemeriksaan', 'biayaTindakan', 'biayaObat', 'totalBayar'));
     }
 
     /**
@@ -74,7 +71,6 @@ class PembayaranController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_pembayaran' => 'required|string|max:8|unique:pembayaran,id_pembayaran',
             'id_pemeriksaan' => 'required|exists:pemeriksaan,id_pemeriksaan',
             'metode_bayar' => 'required|string|max:10',
         ]);
@@ -83,10 +79,7 @@ class PembayaranController extends Controller
         try {
             $pemeriksaan = Pemeriksaan::with(['obats', 'dokterHewan'])->findOrFail($validated['id_pemeriksaan']);
             
-            // Biaya pemeriksaan dokter
-            $biayaPeriksa = $pemeriksaan->dokterHewan->biaya_periksa ?? 0;
-            
-            // Biaya tindakan medis
+            // Biaya tindakan medis (termasuk biaya pemeriksaan)
             $biayaTindakan = $pemeriksaan->biaya_tindakan ?? 0;
             
             // Hitung total obat
@@ -96,11 +89,10 @@ class PembayaranController extends Controller
             }
             
             // Total keseluruhan
-            $totalBayar = $biayaPeriksa + $biayaTindakan + $biayaObat;
+            $totalBayar = $biayaTindakan + $biayaObat;
             
             // Buat pembayaran
             $pembayaran = Pembayaran::create([
-                'id_pembayaran' => $validated['id_pembayaran'],
                 'id_pemeriksaan' => $validated['id_pemeriksaan'],
                 'tanggal_bayar' => now(),
                 'metode_bayar' => $validated['metode_bayar'],

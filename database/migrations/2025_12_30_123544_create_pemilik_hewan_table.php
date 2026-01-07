@@ -9,7 +9,7 @@ class CreatePemilikHewanTable extends Migration
     public function up(): void
     {
         Schema::create('pemilik_hewan', function (Blueprint $table) {
-            $table->char('id_pemilik_hewan', 8)->primary();
+            $table->string('id_pemilik', 10)->primary();
             $table->string('nama_pemilik', 25)->nullable();
             $table->string('no_tlp', 15)->nullable();
             $table->text('alamat')->nullable();

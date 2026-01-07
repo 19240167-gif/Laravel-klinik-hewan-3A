@@ -21,22 +21,6 @@
                     <h6 class="text-muted mb-3"><i class="bi bi-hospital"></i> Data Dokter Hewan</h6>
                     
                     <div class="mb-3">
-                        <label for="id_dokter_hewan" class="form-label">ID Dokter Hewan <span class="text-danger">*</span></label>
-                        <input type="text" 
-                               class="form-control @error('id_dokter_hewan') is-invalid @enderror" 
-                               id="id_dokter_hewan" 
-                               name="id_dokter_hewan" 
-                               value="{{ old('id_dokter_hewan') }}"
-                               maxlength="8"
-                               placeholder="Contoh: DRH001"
-                               required>
-                        <small class="text-muted">Maksimal 8 karakter</small>
-                        @error('id_dokter_hewan')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
                         <label for="nama_dokter" class="form-label">Nama Dokter <span class="text-danger">*</span></label>
                         <input type="text" 
                                class="form-control @error('nama_dokter') is-invalid @enderror" 

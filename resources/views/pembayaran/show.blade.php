@@ -162,17 +162,108 @@
 
 <style>
     @media print {
-        .btn, .btn-group, form {
+        /* Page setup untuk A4 */
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+
+        /* Hide button dan elemen UI */
+        .btn, .btn-group {
             display: none !important;
         }
+
+        /* Adjust margins dan padding */
+        .container-fluid {
+            padding: 0 !important;
+        }
+
+        h2 {
+            font-size: 18pt;
+            margin-bottom: 10px !important;
+        }
+
+        .row {
+            margin-left: -5px !important;
+            margin-right: -5px !important;
+        }
+
+        .col-lg-6 {
+            padding-left: 5px !important;
+            padding-right: 5px !important;
+        }
+
+        .mb-4 {
+            margin-bottom: 10px !important;
+        }
+
+        /* Card styling untuk print */
         .card {
             border: 1px solid #000 !important;
-            margin-bottom: 1rem !important;
+            margin-bottom: 10px !important;
+            page-break-inside: avoid;
         }
+
         .card-header {
-            background-color: #f8f9fa !important;
+            padding: 8px 12px !important;
+            background-color: #e9ecef !important;
             color: #000 !important;
+            border-bottom: 1px solid #000 !important;
             -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .card-header h5 {
+            font-size: 12pt !important;
+            margin: 0 !important;
+        }
+
+        .card-body {
+            padding: 10px 12px !important;
+        }
+
+        /* Table styling */
+        .table {
+            font-size: 11pt;
+            margin-bottom: 5px !important;
+        }
+
+        .table th,
+        .table td {
+            padding: 4px 8px !important;
+        }
+
+        .table-bordered {
+            border: 1px solid #000 !important;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #000 !important;
+        }
+
+        /* Adjust font sizes */
+        .fs-4 {
+            font-size: 14pt !important;
+        }
+
+        .fs-5 {
+            font-size: 12pt !important;
+        }
+
+        .fs-6 {
+            font-size: 11pt !important;
+        }
+
+        /* Badge styling */
+        .badge {
+            border: 1px solid #000 !important;
+            padding: 3px 6px !important;
+        }
+
+        /* Prevent page breaks */
+        .card, .row {
+            page-break-inside: avoid;
         }
     }
 </style>

@@ -27,7 +27,7 @@
                 <tbody>
                     @forelse($dokters as $dokter)
                         <tr>
-                            <td>{{ $dokter->id_dokter_hewan }}</td>
+                            <td>{{ $dokter->id_dokter }}</td>
                             <td>
                                 <i class="bi bi-person-circle text-success"></i>
                                 {{ $dokter->nama_dokter }}
@@ -43,15 +43,15 @@
                             <td>{{ $dokter->created_at->format('d M Y') }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('dokter-hewan.show', $dokter->id_dokter_hewan) }}" 
+                                    <a href="{{ route('dokter-hewan.show', $dokter->id_dokter) }}" 
                                        class="btn btn-info" title="Detail">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ route('dokter-hewan.edit', $dokter->id_dokter_hewan) }}" 
+                                    <a href="{{ route('dokter-hewan.edit', $dokter->id_dokter) }}" 
                                        class="btn btn-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="{{ route('dokter-hewan.destroy', $dokter->id_dokter_hewan) }}" 
+                                    <form action="{{ route('dokter-hewan.destroy', $dokter->id_dokter) }}" 
                                           method="POST" class="d-inline"
                                           onsubmit="return confirm('Yakin ingin menghapus data dokter ini?')">
                                         @csrf

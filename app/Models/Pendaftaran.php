@@ -4,19 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\GeneratesCustomId;
 
 class Pendaftaran extends Model
 {
-    use HasFactory;
+    use HasFactory, GeneratesCustomId;
 
     protected $table = 'pendaftaran';
     protected $primaryKey = 'id_pendaftaran';
     public $incrementing = false;
     protected $keyType = 'string';
+    
+    // Custom ID Configuration - DFT001
+    protected $idPrefix = 'DFT';
+    protected $idLength = 3;
 
     protected $fillable = [
         'id_pendaftaran',
-        'id_pemilik_hewan',
         'id_hewan',
         'id_pegawai',
         'tanggal_daftar',
@@ -28,10 +32,17 @@ class Pendaftaran extends Model
         'tanggal_daftar' => 'date'
     ];
 
-    // Relasi ke PemilikHewan (many to one)
+    // Relasi ke PemilikHewan (many to one) - through Hewan
     public function pemilikHewan()
     {
-        return $this->belongsTo(PemilikHewan::class, 'id_pemilik_hewan', 'id_pemilik_hewan');
+        return $this->hasOneThrough(
+            PemilikHewan::class,
+            Hewan::class,
+            'id_hewan', // FK di tabel hewan
+            'id_pemilik', // FK di tabel pemilik_hewan
+            'id_hewan', // Local key di pendaftaran
+            'id_pemilik' // Local key di hewan
+        );
     }
 
     // Relasi ke Hewan (many to one)

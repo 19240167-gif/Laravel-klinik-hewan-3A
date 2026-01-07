@@ -14,21 +14,6 @@
                     @csrf
                     
                     <div class="mb-3">
-                        <label for="id_pemilik_hewan" class="form-label">ID Pemilik Hewan <span class="text-danger">*</span></label>
-                        <input type="text" 
-                               class="form-control @error('id_pemilik_hewan') is-invalid @enderror" 
-                               id="id_pemilik_hewan" 
-                               name="id_pemilik_hewan" 
-                               value="{{ old('id_pemilik_hewan') }}"
-                               maxlength="8"
-                               required>
-                        <small class="text-muted">Maksimal 8 karakter</small>
-                        @error('id_pemilik_hewan')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
                         <label for="nama_pemilik" class="form-label">Nama Pemilik <span class="text-danger">*</span></label>
                         <input type="text" 
                                class="form-control @error('nama_pemilik') is-invalid @enderror" 

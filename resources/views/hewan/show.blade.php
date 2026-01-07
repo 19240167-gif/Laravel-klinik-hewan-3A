@@ -45,7 +45,7 @@
                             <tr>
                                 <th>Pemilik</th>
                                 <td>: 
-                                    <a href="{{ route('pemilik-hewan.show', $hewan->id_pemilik_hewan) }}" class="text-decoration-none">
+                                    <a href="{{ route('pemilik-hewan.show', $hewan->id_pemilik) }}" class="text-decoration-none">
                                         {{ $hewan->pemilikHewan->nama_pemilik ?? '-' }}
                                     </a>
                                 </td>
@@ -69,7 +69,7 @@
                     <a href="{{ route('hewan.edit', $hewan->id_hewan) }}" class="btn btn-warning">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
-                    <a href="{{ route('pemilik-hewan.show', $hewan->id_pemilik_hewan) }}" class="btn btn-outline-primary">
+                    <a href="{{ route('pemilik-hewan.show', $hewan->id_pemilik) }}" class="btn btn-outline-primary">
                         <i class="bi bi-person"></i> Lihat Pemilik
                     </a>
                 </div>
@@ -86,7 +86,7 @@
                 <br>
                 Satu pemilik dapat memiliki lebih dari satu hewan, namun setiap hewan hanya memiliki satu pemilik.
                 <br>
-                <small class="text-muted">Foreign Key: id_pemilik_hewan ({{ $hewan->id_pemilik_hewan }})</small>
+                <small class="text-muted">Foreign Key: id_pemilik ({{ $hewan->id_pemilik }})</small>
             </p>
         </div>
     </div>

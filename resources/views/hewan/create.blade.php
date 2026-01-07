@@ -16,23 +16,6 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="id_hewan" class="form-label">ID Hewan <span class="text-danger">*</span></label>
-                                <input type="text" 
-                                       class="form-control @error('id_hewan') is-invalid @enderror" 
-                                       id="id_hewan" 
-                                       name="id_hewan" 
-                                       value="{{ old('id_hewan') }}"
-                                       maxlength="8"
-                                       required>
-                                <small class="text-muted">Maksimal 8 karakter</small>
-                                @error('id_hewan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
                                 <label for="nama_hewan" class="form-label">Nama Hewan <span class="text-danger">*</span></label>
                                 <input type="text" 
                                        class="form-control @error('nama_hewan') is-invalid @enderror" 
@@ -46,8 +29,8 @@
                                 @enderror
                             </div>
                         </div>
-                    </div>
 
+                        <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -104,23 +87,23 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="id_pemilik_hewan" class="form-label">Pemilik Hewan <span class="text-danger">*</span></label>
-                        <select class="form-select select2-pemilik @error('id_pemilik_hewan') is-invalid @enderror" 
-                                id="id_pemilik_hewan" 
-                                name="id_pemilik_hewan" 
+                        <label for="id_pemilik" class="form-label">Pemilik Hewan <span class="text-danger">*</span></label>
+                        <select class="form-select select2-pemilik @error('id_pemilik') is-invalid @enderror" 
+                                id="id_pemilik" 
+                                name="id_pemilik" 
                                 required>
                             <option value="">-- Pilih Pemilik --</option>
                             @foreach($pemilikHewans as $pemilik)
-                                <option value="{{ $pemilik->id_pemilik_hewan }}" 
-                                        {{ old('id_pemilik_hewan', $selectedPemilik ?? '') == $pemilik->id_pemilik_hewan ? 'selected' : '' }}>
-                                    {{ $pemilik->id_pemilik_hewan }} - {{ $pemilik->nama_pemilik }}
+                                <option value="{{ $pemilik->id_pemilik }}" 
+                                        {{ old('id_pemilik', $selectedPemilik ?? '') == $pemilik->id_pemilik ? 'selected' : '' }}>
+                                    {{ $pemilik->id_pemilik }} - {{ $pemilik->nama_pemilik }}
                                     @if($pemilik->no_tlp)
                                         ({{ $pemilik->no_tlp }})
                                     @endif
                                 </option>
                             @endforeach
                         </select>
-                        @error('id_pemilik_hewan')
+                        @error('id_pemilik')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         <small class="text-muted">

@@ -4,15 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\GeneratesCustomId;
 
 class Pegawai extends Model
 {
-    use HasFactory;
+    use HasFactory, GeneratesCustomId;
 
     protected $table = 'pegawai';
     protected $primaryKey = 'id_pegawai';
     public $incrementing = false;
     protected $keyType = 'string';
+    
+    // Custom ID Configuration - PGW001
+    protected $idPrefix = 'PGW';
+    protected $idLength = 3;
 
     protected $fillable = [
         'id_pegawai',

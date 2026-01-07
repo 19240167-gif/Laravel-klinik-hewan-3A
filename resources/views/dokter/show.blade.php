@@ -13,7 +13,7 @@
                 <table class="table table-borderless">
                     <tr>
                         <th width="200">ID Dokter</th>
-                        <td>: {{ $dokter->id_dokter_hewan }}</td>
+                        <td>: {{ $dokter->id_dokter }}</td>
                     </tr>
                     <tr>
                         <th>Nama Dokter</th>
@@ -80,7 +80,7 @@
             <a href="{{ route('dokter-hewan.index') }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Kembali
             </a>
-            <a href="{{ route('dokter-hewan.edit', $dokter->id_dokter_hewan) }}" class="btn btn-warning">
+            <a href="{{ route('dokter-hewan.edit', $dokter->id_dokter) }}" class="btn btn-warning">
                 <i class="bi bi-pencil"></i> Edit
             </a>
         </div>

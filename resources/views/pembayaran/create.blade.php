@@ -67,27 +67,11 @@
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
-                    <!-- Biaya Pemeriksaan Dokter -->
-                    <tr class="table-light">
-                        <th colspan="4"><i class="bi bi-hospital"></i> Biaya Jasa Pemeriksaan Dokter</th>
-                    </tr>
-                    <tr>
-                        <td>{{ $pemeriksaan->dokterHewan->nama_dokter ?? '-' }}</td>
-                        <td class="text-center">1</td>
-                        <td class="text-end">Rp {{ number_format($biayaPeriksa, 0, ',', '.') }}</td>
-                        <td class="text-end"><strong>Rp {{ number_format($biayaPeriksa, 0, ',', '.') }}</strong></td>
-                    </tr>
-
                     <!-- Biaya Tindakan Medis -->
-                    @if($biayaTindakan > 0)
                     <tr class="table-light">
-                        <th colspan="4"><i class="bi bi-bandaid"></i> Biaya Tindakan Medis</th>
+                        <th colspan="3"><i class="bi bi-hospital"></i> Biaya Tindakan Medis - {{ $pemeriksaan->dokterHewan->nama_dokter ?? '-' }}</th>
+                        <th class="text-end">Rp {{ number_format($biayaTindakan, 0, ',', '.') }}</th>
                     </tr>
-                    <tr>
-                        <td colspan="3">{{ $pemeriksaan->tindakan ?? 'Tindakan Medis' }}</td>
-                        <td class="text-end"><strong>Rp {{ number_format($biayaTindakan, 0, ',', '.') }}</strong></td>
-                    </tr>
-                    @endif
 
                     <!-- Biaya Obat -->
                     @if($pemeriksaan->obats->count() > 0)
@@ -130,17 +114,7 @@
             <input type="hidden" name="id_pemeriksaan" value="{{ $pemeriksaan->id_pemeriksaan }}">
 
             <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label for="id_pembayaran" class="form-label">ID Pembayaran <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('id_pembayaran') is-invalid @enderror" 
-                           id="id_pembayaran" name="id_pembayaran" value="{{ old('id_pembayaran') }}" 
-                           maxlength="8" required placeholder="Contoh: BAY00001">
-                    @error('id_pembayaran')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="col-md-4 mb-3">
+                <div class="col-md-6 mb-3">
                     <label for="metode_bayar" class="form-label">Metode Pembayaran <span class="text-danger">*</span></label>
                     <select class="form-select @error('metode_bayar') is-invalid @enderror" 
                             id="metode_bayar" name="metode_bayar" required>
@@ -156,7 +130,7 @@
                     @enderror
                 </div>
 
-                <div class="col-md-4 mb-3">
+                <div class="col-md-6 mb-3">
                     <label class="form-label">Total yang Harus Dibayar</label>
                     <div class="input-group">
                         <span class="input-group-text">Rp</span>

@@ -68,11 +68,19 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pendaftaran', PendaftaranController::class);
         
         // AJAX endpoint untuk get hewan by pemilik
-        Route::get('api/hewan-by-pemilik/{id_pemilik_hewan}', [PendaftaranController::class, 'getHewanByPemilik'])->name('api.hewan-by-pemilik');
+        Route::get('api/hewan-by-pemilik/{id_pemilik}', [PendaftaranController::class, 'getHewanByPemilik'])->name('api.hewan-by-pemilik');
         
-        // Pembayaran routes
+        // Pembayaran routes - Pegawai hanya bisa view dan create
         Route::get('pembayaran/pending', [PembayaranController::class, 'pending'])->name('pembayaran.pending');
-        Route::resource('pembayaran', PembayaranController::class);
+        Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran.index');
+        Route::get('pembayaran/create', [PembayaranController::class, 'create'])->name('pembayaran.create');
+        Route::post('pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
+        Route::get('pembayaran/{pembayaran}', [PembayaranController::class, 'show'])->name('pembayaran.show');
+    });
+
+    // Routes khusus Admin - Hapus pembayaran
+    Route::middleware(['role:admin'])->group(function () {
+        Route::delete('pembayaran/{pembayaran}', [PembayaranController::class, 'destroy'])->name('pembayaran.destroy');
     });
 
     // Routes untuk Dokter dan Admin - Pemeriksaan

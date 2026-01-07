@@ -4,16 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\GeneratesCustomId;
 
 class DetailPembayaranObat extends Model
 {
-    use HasFactory;
+    use HasFactory, GeneratesCustomId;
 
     protected $table = 'detail_pembayaran_obat';
+    protected $primaryKey = 'id_detail';
     public $incrementing = false;
-    protected $primaryKey = null;
+    protected $keyType = 'string';
+    
+    // Custom ID Configuration - DPO001
+    protected $idPrefix = 'DPO';
+    protected $idLength = 3;
 
     protected $fillable = [
+        'id_detail',
         'id_pembayaran',
         'id_obat',
         'jumlah',

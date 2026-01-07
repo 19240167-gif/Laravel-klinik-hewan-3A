@@ -11,10 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pendaftaran', function (Blueprint $table) {
-            $table->char('id_hewan', 8)->nullable()->after('id_pemilik_hewan');
-            $table->foreign('id_hewan')->references('id_hewan')->on('hewan')->onDelete('set null');
-        });
+        // id_hewan sudah ada di create pendaftaran table, skip
     }
 
     /**
@@ -22,9 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pendaftaran', function (Blueprint $table) {
-            $table->dropForeign(['id_hewan']);
-            $table->dropColumn('id_hewan');
-        });
+        // Skip
     }
 };

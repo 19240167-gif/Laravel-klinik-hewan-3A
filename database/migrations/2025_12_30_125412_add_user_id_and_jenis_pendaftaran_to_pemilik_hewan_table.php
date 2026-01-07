@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pemilik_hewan', function (Blueprint $table) {
-            $table->foreignId('user_id')->nullable()->after('id_pemilik_hewan')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->after('id_pemilik')->constrained('users')->onDelete('cascade');
             $table->enum('jenis_pendaftaran', ['online', 'offline'])->default('offline')->after('alamat');
         });
     }

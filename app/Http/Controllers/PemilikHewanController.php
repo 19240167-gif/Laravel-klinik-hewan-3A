@@ -12,8 +12,7 @@ class PemilikHewanController extends Controller
      */
     public function index()
     {
-        $pemilikHewans = PemilikHewan::where('jenis_pendaftaran', 'offline')
-            ->orderBy('created_at', 'desc')
+        $pemilikHewans = PemilikHewan::orderBy('created_at', 'desc')
             ->paginate(10);
         return view('pemilik_hewan.index', compact('pemilikHewans'));
     }
@@ -32,7 +31,6 @@ class PemilikHewanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_pemilik_hewan' => 'required|string|max:8|unique:pemilik_hewan,id_pemilik_hewan',
             'nama_pemilik' => 'required|string|max:25',
             'no_tlp' => 'nullable|string|max:15',
             'alamat' => 'nullable|string'

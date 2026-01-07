@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pemeriksaan', function (Blueprint $table) {
-            $table->char('id_pemeriksaan', 8)->primary();
-            $table->char('id_pendaftaran', 8)->nullable();
-            $table->char('id_dokter_hewan', 8)->nullable();
+            $table->string('id_pemeriksaan', 10)->primary();
+            $table->string('id_pendaftaran', 10)->nullable();
+            $table->string('id_dokter', 10)->nullable();
             $table->text('diagnosa')->nullable();
             $table->text('tindakan')->nullable();
             $table->date('tanggal_periksa')->nullable();
             $table->timestamps();
             
             $table->foreign('id_pendaftaran')->references('id_pendaftaran')->on('pendaftaran');
-            $table->foreign('id_dokter_hewan')->references('id_dokter_hewan')->on('dokter_hewan');
+            $table->foreign('id_dokter')->references('id_dokter')->on('dokter_hewan');
         });
     }
 

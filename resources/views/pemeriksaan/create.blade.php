@@ -41,40 +41,25 @@
                     <input type="hidden" name="id_pendaftaran" value="{{ $pendaftaran->id_pendaftaran }}">
                     
                     <div class="mb-3">
-                        <label for="id_pemeriksaan" class="form-label">ID Pemeriksaan <span class="text-danger">*</span></label>
-                        <input type="text" 
-                               class="form-control @error('id_pemeriksaan') is-invalid @enderror" 
-                               id="id_pemeriksaan" 
-                               name="id_pemeriksaan" 
-                               value="{{ old('id_pemeriksaan') }}"
-                               maxlength="8"
-                               required>
-                        <small class="text-muted">Maksimal 8 karakter</small>
-                        @error('id_pemeriksaan')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="id_dokter_hewan" class="form-label">Dokter Hewan <span class="text-danger">*</span></label>
+                        <label for="id_dokter" class="form-label">Dokter Hewan <span class="text-danger">*</span></label>
                         @if($dokterLogin)
                             <input type="text" 
                                    class="form-control" 
                                    value="{{ $dokterLogin->nama_dokter }} (SIP: {{ $dokterLogin->no_sip }})" 
                                    disabled>
-                            <input type="hidden" name="id_dokter_hewan" value="{{ $dokterLogin->id_dokter_hewan }}">
+                            <input type="hidden" name="id_dokter" value="{{ $dokterLogin->id_dokter }}">
                             <small class="text-muted">
                                 <i class="bi bi-info-circle"></i> Dokter otomatis terisi berdasarkan akun yang login
                             </small>
                         @else
-                            <select class="form-select select2-dokter @error('id_dokter_hewan') is-invalid @enderror" 
-                                    id="id_dokter_hewan" 
-                                    name="id_dokter_hewan" 
+                            <select class="form-select select2-dokter @error('id_dokter') is-invalid @enderror" 
+                                    id="id_dokter" 
+                                    name="id_dokter" 
                                     required>
                                 <option value="">-- Pilih Dokter Hewan --</option>
                                 @foreach($dokterHewans as $dokter)
-                                    <option value="{{ $dokter->id_dokter_hewan }}" 
-                                            {{ old('id_dokter_hewan') == $dokter->id_dokter_hewan ? 'selected' : '' }}>
+                                    <option value="{{ $dokter->id_dokter }}" 
+                                            {{ old('id_dokter') == $dokter->id_dokter ? 'selected' : '' }}>
                                         {{ $dokter->nama_dokter }} (SIP: {{ $dokter->no_sip }})
                                     </option>
                                 @endforeach
@@ -83,7 +68,7 @@
                                 <i class="bi bi-info-circle"></i> Ketik untuk mencari dokter berdasarkan nama atau SIP
                             </small>
                         @endif
-                        @error('id_dokter_hewan')
+                        @error('id_dokter')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -125,7 +110,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="biaya_tindakan" class="form-label">Biaya Tindakan Medis</label>
+                        <label for="biaya_tindakan" class="form-label">Biaya Tindakan Medis <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text">Rp</span>
                             <input type="number" 
@@ -134,12 +119,13 @@
                                    name="biaya_tindakan" 
                                    value="{{ old('biaya_tindakan', 0) }}"
                                    min="0"
-                                   step="1000">
+                                   step="1000"
+                                   required>
                             @error('biaya_tindakan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <small class="text-muted">Isi jika ada tindakan medis yang memerlukan biaya tambahan (operasi, rawat inap, dll)</small>
+                        <small class="text-muted">Biaya pemeriksaan dan tindakan medis dokter hewan</small>
                     </div>
 
                     <!-- Obat Section -->

@@ -4,20 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\GeneratesCustomId;
 
 class Pemeriksaan extends Model
 {
-    use HasFactory;
+    use HasFactory, GeneratesCustomId;
 
     protected $table = 'pemeriksaan';
     protected $primaryKey = 'id_pemeriksaan';
     public $incrementing = false;
     protected $keyType = 'string';
+    
+    // Custom ID Configuration - PMR001
+    protected $idPrefix = 'PMR';
+    protected $idLength = 3;
 
     protected $fillable = [
         'id_pemeriksaan',
         'id_pendaftaran',
-        'id_dokter_hewan',
+        'id_dokter',
         'diagnosa',
         'tindakan',
         'biaya_tindakan',
@@ -37,7 +42,7 @@ class Pemeriksaan extends Model
     // Relasi ke DokterHewan (many to one)
     public function dokterHewan()
     {
-        return $this->belongsTo(DokterHewan::class, 'id_dokter_hewan', 'id_dokter_hewan');
+        return $this->belongsTo(DokterHewan::class, 'id_dokter', 'id_dokter');
     }
 
     // Relasi ke Pembayaran (one to one)

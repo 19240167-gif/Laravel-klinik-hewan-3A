@@ -30,7 +30,6 @@ class ObatController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_obat' => 'required|string|max:8|unique:obat,id_obat',
             'nama_obat' => 'required|string|max:20',
             'jenis_obat' => 'nullable|string|max:15',
             'harga_obat' => 'required|integer|min:0',

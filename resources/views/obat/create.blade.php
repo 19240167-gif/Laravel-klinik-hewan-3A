@@ -10,26 +10,7 @@
                 <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Tambah Obat</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('obat.store') }}" method="POST">
-                    @csrf
-                    
-                    <div class="mb-3">
-                        <label for="id_obat" class="form-label">ID Obat <span class="text-danger">*</span></label>
-                        <input type="text" 
-                               class="form-control @error('id_obat') is-invalid @enderror" 
-                               id="id_obat" 
-                               name="id_obat" 
-                               value="{{ old('id_obat') }}"
-                               maxlength="8"
-                               required>
-                        <small class="text-muted">Maksimal 8 karakter</small>
-                        @error('id_obat')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="nama_obat" class="form-label">Nama Obat <span class="text-danger">*</span></label>
+                <form action="{{ route('obat.store') }}\" method=\"POST\">\n                    @csrf\n                    \n                    <div class=\"mb-3\">\n                        <label for=\"nama_obat\" class=\"form-label\">Nama Obat <span class=\"text-danger\">*</span></label>
                         <input type="text" 
                                class="form-control @error('nama_obat') is-invalid @enderror" 
                                id="nama_obat" 

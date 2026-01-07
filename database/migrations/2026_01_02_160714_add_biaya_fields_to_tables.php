@@ -11,11 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Tambah biaya_periksa ke tabel dokter_hewan
-        Schema::table('dokter_hewan', function (Blueprint $table) {
-            $table->integer('biaya_periksa')->default(0)->after('no_sip');
-        });
-
         // Tambah biaya_tindakan ke tabel pemeriksaan
         Schema::table('pemeriksaan', function (Blueprint $table) {
             $table->integer('biaya_tindakan')->default(0)->after('tindakan');
@@ -27,10 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('dokter_hewan', function (Blueprint $table) {
-            $table->dropColumn('biaya_periksa');
-        });
-
         Schema::table('pemeriksaan', function (Blueprint $table) {
             $table->dropColumn('biaya_tindakan');
         });

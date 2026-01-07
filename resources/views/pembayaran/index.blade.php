@@ -58,15 +58,17 @@
                                        class="btn btn-info" title="Detail">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <form action="{{ route('pembayaran.destroy', $pembayaran->id_pembayaran) }}" 
-                                          method="POST" class="d-inline"
-                                          onsubmit="return confirm('Yakin ingin menghapus data pembayaran ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger" title="Hapus">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
+                                    @if(auth()->user()->role == 'admin')
+                                        <form action="{{ route('pembayaran.destroy', $pembayaran->id_pembayaran) }}" 
+                                              method="POST" class="d-inline"
+                                              onsubmit="return confirm('Yakin ingin menghapus data pembayaran ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger" title="Hapus">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

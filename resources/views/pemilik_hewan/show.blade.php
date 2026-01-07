@@ -13,7 +13,7 @@
                 <table class="table table-borderless">
                     <tr>
                         <th width="200">ID Pemilik</th>
-                        <td>: {{ $pemilikHewan->id_pemilik_hewan }}</td>
+                        <td>: {{ $pemilikHewan->id_pemilik }}</td>
                     </tr>
                     <tr>
                         <th>Nama Pemilik</th>
@@ -45,7 +45,7 @@
                     <a href="{{ route('pemilik-hewan.index') }}" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Kembali
                     </a>
-                    <a href="{{ route('pemilik-hewan.edit', $pemilikHewan->id_pemilik_hewan) }}" class="btn btn-warning">
+                    <a href="{{ route('pemilik-hewan.edit', $pemilikHewan->id_pemilik) }}" class="btn btn-warning">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
                 </div>
@@ -56,7 +56,7 @@
         <div class="card mt-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="mb-0"><i class="bi bi-award"></i> Daftar Hewan yang Dimiliki</h6>
-                <a href="{{ route('hewan.create') }}?pemilik={{ $pemilikHewan->id_pemilik_hewan }}" class="btn btn-sm btn-primary">
+                <a href="{{ route('hewan.create') }}?pemilik={{ $pemilikHewan->id_pemilik }}" class="btn btn-sm btn-primary">
                     <i class="bi bi-plus"></i> Tambah Hewan
                 </a>
             </div>
@@ -106,7 +106,7 @@
                     <div class="text-center py-3">
                         <i class="bi bi-inbox fs-1 text-muted"></i>
                         <p class="text-muted mb-2">Belum ada hewan terdaftar</p>
-                        <a href="{{ route('hewan.create') }}?pemilik={{ $pemilikHewan->id_pemilik_hewan }}" class="btn btn-sm btn-primary">
+                        <a href="{{ route('hewan.create') }}?pemilik={{ $pemilikHewan->id_pemilik }}" class="btn btn-sm btn-primary">
                             <i class="bi bi-plus-circle"></i> Tambah Hewan Pertama
                         </a>
                     </div>

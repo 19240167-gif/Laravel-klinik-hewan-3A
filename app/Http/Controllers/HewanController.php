@@ -35,12 +35,11 @@ class HewanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_hewan' => 'required|string|max:8|unique:hewan,id_hewan',
             'nama_hewan' => 'required|string|max:10',
             'jenis_hewan' => 'required|string|max:10',
             'jenis_kelamin' => 'required|in:jantan,betina',
             'umur' => 'nullable|string|max:2',
-            'id_pemilik_hewan' => 'required|exists:pemilik_hewan,id_pemilik_hewan'
+            'id_pemilik' => 'required|exists:pemilik_hewan,id_pemilik'
         ]);
 
         Hewan::create($validated);
@@ -80,7 +79,7 @@ class HewanController extends Controller
             'jenis_hewan' => 'required|string|max:10',
             'jenis_kelamin' => 'required|in:jantan,betina',
             'umur' => 'nullable|string|max:2',
-            'id_pemilik_hewan' => 'required|exists:pemilik_hewan,id_pemilik_hewan'
+            'id_pemilik' => 'required|exists:pemilik_hewan,id_pemilik'
         ]);
 
         $hewan->update($validated);

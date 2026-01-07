@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="id_dokter_hewan" class="form-label">Dokter Hewan</label>
+                        <label for="id_dokter" class="form-label">Dokter Hewan</label>
                         <input type="text" 
                                class="form-control" 
                                value="{{ $pemeriksaan->dokterHewan->nama_dokter }} (SIP: {{ $pemeriksaan->dokterHewan->no_sip }})"

@@ -36,8 +36,6 @@ class PendaftaranController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_pendaftaran' => 'required|string|max:8|unique:pendaftaran,id_pendaftaran',
-            'id_pemilik_hewan' => 'required|exists:pemilik_hewan,id_pemilik_hewan',
             'id_hewan' => 'required|exists:hewan,id_hewan',
             'tanggal_daftar' => 'required|date',
             'keluhan' => 'nullable|string'
@@ -82,8 +80,8 @@ class PendaftaranController extends Controller
         
         // Load semua hewan dari pemilik yang dipilih
         $hewans = [];
-        if ($pendaftaran->id_pemilik_hewan) {
-            $hewans = Hewan::where('id_pemilik_hewan', $pendaftaran->id_pemilik_hewan)->get();
+        if ($pendaftaran->hewan && $pendaftaran->hewan->id_pemilik) {
+            $hewans = Hewan::where('id_pemilik', $pendaftaran->hewan->id_pemilik)->get();
         }
         
         return view('pendaftaran.edit', compact('pendaftaran', 'pemilikHewans', 'pegawais', 'hewans'));
@@ -97,7 +95,6 @@ class PendaftaranController extends Controller
         $pendaftaran = Pendaftaran::findOrFail($id);
 
         $validated = $request->validate([
-            'id_pemilik_hewan' => 'required|exists:pemilik_hewan,id_pemilik_hewan',
             'id_hewan' => 'required|exists:hewan,id_hewan',
             'id_pegawai' => 'required|exists:pegawai,id_pegawai',
             'tanggal_daftar' => 'required|date',
@@ -126,9 +123,9 @@ class PendaftaranController extends Controller
     /**
      * Get hewan by pemilik (AJAX endpoint)
      */
-    public function getHewanByPemilik($id_pemilik_hewan)
+    public function getHewanByPemilik($id_pemilik)
     {
-        $hewans = Hewan::where('id_pemilik_hewan', $id_pemilik_hewan)->get();
+        $hewans = Hewan::where('id_pemilik', $id_pemilik)->get();
         return response()->json($hewans);
     }
 }

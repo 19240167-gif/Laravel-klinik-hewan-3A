@@ -33,7 +33,6 @@ class DokterHewanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_dokter_hewan' => 'required|string|max:8|unique:dokter_hewan,id_dokter_hewan',
             'nama_dokter' => 'required|string|max:25',
             'no_sip' => 'nullable|string|max:20',
             'biaya_periksa' => 'required|integer|min:0',
@@ -51,9 +50,8 @@ class DokterHewanController extends Controller
                 'role' => 'dokter',
             ]);
 
-            // Buat data dokter hewan
+            // Buat data dokter hewan - ID auto generate
             DokterHewan::create([
-                'id_dokter_hewan' => $validated['id_dokter_hewan'],
                 'nama_dokter' => $validated['nama_dokter'],
                 'no_sip' => $validated['no_sip'],
                 'biaya_periksa' => $validated['biaya_periksa'],
