@@ -42,15 +42,23 @@ class PendaftaranController extends Controller
         ]);
 
         // Ambil pegawai berdasarkan user yang login
-        $pegawai = Pegawai::where('nama_pegawai', auth()->user()->name)->first();
-        
-        if (!$pegawai) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Data pegawai tidak ditemukan untuk user ini');
+        // Jika admin, ambil pegawai pertama atau bisa dibiarkan null
+        if (auth()->user()->role == 'admin') {
+            // Admin bisa tidak punya id_pegawai atau ambil pegawai pertama
+            $pegawai = Pegawai::first();
+            $validated['id_pegawai'] = $pegawai ? $pegawai->id_pegawai : null;
+        } else {
+            // Untuk role pegawai
+            $pegawai = Pegawai::where('nama_pegawai', auth()->user()->name)->first();
+            
+            if (!$pegawai) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Data pegawai tidak ditemukan untuk user ini');
+            }
+            $validated['id_pegawai'] = $pegawai->id_pegawai;
         }
 
-        $validated['id_pegawai'] = $pegawai->id_pegawai;
         $validated['status'] = 'menunggu'; // Status otomatis menunggu saat dibuat
 
         Pendaftaran::create($validated);

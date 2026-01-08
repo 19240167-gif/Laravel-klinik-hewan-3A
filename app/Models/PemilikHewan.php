@@ -40,9 +40,16 @@ class PemilikHewan extends Model
         return $this->hasMany(Hewan::class, 'id_pemilik', 'id_pemilik');
     }
 
-    // Relasi ke Pendaftaran (one to many)
+    // Relasi ke Pendaftaran (through Hewan)
     public function pendaftaran()
     {
-        return $this->hasMany(Pendaftaran::class, 'id_pemilik', 'id_pemilik');
+        return $this->hasManyThrough(
+            Pendaftaran::class,
+            Hewan::class,
+            'id_pemilik',      // Foreign key on hewan table
+            'id_hewan',        // Foreign key on pendaftaran table
+            'id_pemilik',      // Local key on pemilik_hewan table
+            'id_hewan'         // Local key on hewan table
+        );
     }
 }

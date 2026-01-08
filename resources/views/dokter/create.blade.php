@@ -49,25 +49,6 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label for="biaya_periksa" class="form-label">Biaya Pemeriksaan <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text">Rp</span>
-                            <input type="number" 
-                                   class="form-control @error('biaya_periksa') is-invalid @enderror" 
-                                   id="biaya_periksa" 
-                                   name="biaya_periksa" 
-                                   value="{{ old('biaya_periksa', 50000) }}"
-                                   min="0"
-                                   step="1000"
-                                   required>
-                            @error('biaya_periksa')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <small class="text-muted">Tarif konsultasi/pemeriksaan dokter</small>
-                    </div>
-
                     <hr>
                     <h6 class="text-muted mb-3"><i class="bi bi-key"></i> Data Akun Login</h6>
 

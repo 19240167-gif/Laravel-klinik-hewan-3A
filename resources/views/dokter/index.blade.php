@@ -19,7 +19,6 @@
                         <th>ID</th>
                         <th>Nama Dokter</th>
                         <th>No. SIP</th>
-                        <th>Biaya Periksa</th>
                         <th>Terdaftar</th>
                         <th>Aksi</th>
                     </tr>
@@ -39,7 +38,6 @@
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>Rp {{ number_format($dokter->biaya_periksa ?? 0, 0, ',', '.') }}</td>
                             <td>{{ $dokter->created_at->format('d M Y') }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm">

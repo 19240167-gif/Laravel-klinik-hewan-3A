@@ -43,13 +43,12 @@
                 <tbody>
                     @forelse($pemeriksaans as $pemeriksaan)
                         @php
-                            $biayaPeriksa = $pemeriksaan->dokterHewan->biaya_periksa ?? 0;
                             $biayaTindakan = $pemeriksaan->biaya_tindakan ?? 0;
                             $biayaObat = 0;
                             foreach($pemeriksaan->obats as $obat) {
                                 $biayaObat += $obat->harga_obat * $obat->pivot->jumlah;
                             }
-                            $totalBiaya = $biayaPeriksa + $biayaTindakan + $biayaObat;
+                            $totalBiaya = $biayaTindakan + $biayaObat;
                         @endphp
                         <tr>
                             <td>{{ $pemeriksaan->id_pemeriksaan }}</td>
