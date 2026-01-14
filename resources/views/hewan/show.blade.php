@@ -75,20 +75,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Info Relasi -->
-        <div class="alert alert-info mt-3">
-            <h6 class="alert-heading"><i class="bi bi-diagram-3"></i> Relasi Database (One-to-Many)</h6>
-            <hr>
-            <p class="mb-0">
-                <strong>{{ $hewan->nama_hewan }}</strong> adalah milik 
-                <strong>{{ $hewan->pemilikHewan->nama_pemilik ?? '-' }}</strong>.
-                <br>
-                Satu pemilik dapat memiliki lebih dari satu hewan, namun setiap hewan hanya memiliki satu pemilik.
-                <br>
-                <small class="text-muted">Foreign Key: id_pemilik ({{ $hewan->id_pemilik }})</small>
-            </p>
-        </div>
     </div>
 
     <div class="col-md-4">
@@ -116,9 +102,6 @@
                                 </div>
                             </a>
                         @endforeach
-                    </div>
-                    <div class="mt-2 small text-muted">
-                        <i class="bi bi-info-circle"></i> Total: {{ $hewan->pemilikHewan->hewan->count() }} hewan dimiliki
                     </div>
                 @else
                     <p class="text-muted mb-0 small">Ini satu-satunya hewan milik {{ $hewan->pemilikHewan->nama_pemilik }}</p>

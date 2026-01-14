@@ -84,10 +84,4 @@
 <div class="mt-3">
     {{ $hewans->links() }}
 </div>
-
-<!-- Info Relasi -->
-<div class="alert alert-info mt-3">
-    <i class="bi bi-info-circle"></i> <strong>Relasi One-to-Many:</strong> 
-    Setiap hewan memiliki satu pemilik, namun satu pemilik dapat memiliki banyak hewan.
-</div>
 @endsection

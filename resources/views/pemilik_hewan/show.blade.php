@@ -97,11 +97,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="alert alert-success mb-0 mt-2">
-                        <i class="bi bi-check-circle"></i> <strong>Total: {{ $pemilikHewan->hewan->count() }} hewan</strong>
-                        <br>
-                        <small>Relasi One-to-Many: Satu pemilik dapat memiliki banyak hewan.</small>
-                    </div>
                 @else
                     <div class="text-center py-3">
                         <i class="bi bi-inbox fs-1 text-muted"></i>

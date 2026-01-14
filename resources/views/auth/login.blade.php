@@ -92,27 +92,6 @@
                                 <i class="bi bi-box-arrow-in-right"></i> Login
                             </button>
                         </form>
-
-                        <hr class="my-4">
-
-                        <div class="alert alert-info small mb-0">
-                            <strong><i class="bi bi-info-circle"></i> Demo Account:</strong><br>
-                            <table class="table table-sm table-borderless mb-0 mt-2">
-                                <tr>
-                                    <td><span class="badge bg-danger">Admin</span></td>
-                                    <td>admin@klinik.com</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-warning text-dark">Pegawai</span></td>
-                                    <td>pegawai@klinik.com</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-success">Dokter</span></td>
-                                    <td>dokter@klinik.com</td>
-                                </tr>
-                            </table>
-                            <div class="mt-2"><i class="bi bi-key"></i> Password: <code>password</code></div>
-                        </div>
                     </div>
                 </div>
             </div>

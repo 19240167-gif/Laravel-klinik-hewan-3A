@@ -119,7 +119,7 @@
                                    name="biaya_tindakan" 
                                    value="{{ old('biaya_tindakan', 0) }}"
                                    min="0"
-                                   step="1000"
+                                   step="100"
                                    required>
                             @error('biaya_tindakan')
                                 <div class="invalid-feedback">{{ $message }}</div>
