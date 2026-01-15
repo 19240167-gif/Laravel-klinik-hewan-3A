@@ -97,8 +97,13 @@ class DokterHewanController extends Controller
         $validated = $request->validate([
             'nama_dokter' => 'required|string|max:25',
             'no_sip' => 'nullable|string|max:20',
-            'biaya_periksa' => 'required|integer|min:0',
         ]);
+
+        // Update juga nama user jika ada
+        $user = User::where('name', $dokter->nama_dokter)->first();
+        if ($user && $dokter->nama_dokter != $validated['nama_dokter']) {
+            $user->update(['name' => $validated['nama_dokter']]);
+        }
 
         $dokter->update($validated);
 
@@ -113,15 +118,27 @@ class DokterHewanController extends Controller
     {
         $dokter = DokterHewan::findOrFail($id);
         
-        // Cek apakah dokter masih memiliki pemeriksaan
-        if ($dokter->pemeriksaan()->count() > 0) {
+        DB::beginTransaction();
+        try {
+            // Hapus user terkait jika ada
+            $user = User::where('name', $dokter->nama_dokter)->where('role', 'dokter')->first();
+            if ($user) {
+                $user->delete();
+            }
+            
+            // Set null untuk pemeriksaan yang terkait
+            $dokter->pemeriksaan()->update(['id_dokter' => null]);
+            
+            $dokter->delete();
+            
+            DB::commit();
+
             return redirect()->route('dokter-hewan.index')
-                ->with('error', 'Dokter tidak dapat dihapus karena masih memiliki data pemeriksaan');
+                ->with('success', 'Data dokter hewan berhasil dihapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('dokter-hewan.index')
+                ->with('error', 'Gagal menghapus dokter: ' . $e->getMessage());
         }
-
-        $dokter->delete();
-
-        return redirect()->route('dokter-hewan.index')
-            ->with('success', 'Data dokter hewan berhasil dihapus');
     }
 }
