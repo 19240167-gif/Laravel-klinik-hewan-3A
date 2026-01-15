@@ -22,8 +22,7 @@ class DokterHewan extends Model
     protected $fillable = [
         'id_dokter',
         'nama_dokter',
-        'no_sip',
-        'biaya_periksa'
+        'no_sip'
     ];
 
     // Relasi ke Pemeriksaan (one to many)

@@ -35,7 +35,6 @@ class DokterHewanController extends Controller
         $validated = $request->validate([
             'nama_dokter' => 'required|string|max:25',
             'no_sip' => 'nullable|string|max:20',
-            'biaya_periksa' => 'required|integer|min:0',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -54,7 +53,6 @@ class DokterHewanController extends Controller
             DokterHewan::create([
                 'nama_dokter' => $validated['nama_dokter'],
                 'no_sip' => $validated['no_sip'],
-                'biaya_periksa' => $validated['biaya_periksa'],
             ]);
 
             DB::commit();
