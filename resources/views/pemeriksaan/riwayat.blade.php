@@ -48,16 +48,11 @@
                                                title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <form action="{{ route('pemeriksaan.destroy', $pemeriksaan->id_pemeriksaan) }}" 
-                                                  method="POST" 
-                                                  class="d-inline"
-                                                  onsubmit="return confirm('Yakin ingin menghapus data pemeriksaan ini? Status pendaftaran akan dikembalikan ke menunggu.')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger" title="Hapus">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn btn-danger" title="Hapus"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal{{ $pemeriksaan->id_pemeriksaan }}">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
                                         @endif
                                     </div>
                                 </td>
@@ -78,4 +73,67 @@
 <div class="mt-3">
     {{ $pemeriksaans->links() }}
 </div>
+
+<!-- Modal Hapus untuk setiap pemeriksaan -->
+@if($pemeriksaans->count() > 0)
+    @foreach($pemeriksaans as $pemeriksaan)
+        @if(auth()->user()->role === 'admin' || (auth()->user()->role === 'dokter' && optional($pemeriksaan->dokterHewan)->nama_dokter === auth()->user()->name))
+        <div class="modal fade" id="deleteModal{{ $pemeriksaan->id_pemeriksaan }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-exclamation-triangle"></i> Hapus Pemeriksaan {{ $pemeriksaan->id_pemeriksaan }}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        @if($pemeriksaan->pembayaran)
+                            <div class="alert alert-danger mb-0">
+                                <i class="bi bi-x-circle"></i> <strong>Tidak dapat dihapus!</strong><br>
+                                Pemeriksaan ini sudah memiliki data pembayaran 
+                                <strong>({{ $pemeriksaan->pembayaran->id_pembayaran }})</strong>. 
+                                Hapus pembayaran terlebih dahulu sebelum menghapus pemeriksaan.
+                            </div>
+                        @else
+                            <p>Pilih tindakan untuk pemeriksaan <strong>{{ $pemeriksaan->id_pemeriksaan }}</strong>:</p>
+
+                            <div class="d-grid gap-2">
+                                <!-- Opsi 1: Kembalikan ke pendaftaran -->
+                                <form action="{{ route('pemeriksaan.destroy', $pemeriksaan->id_pemeriksaan) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="aksi" value="kembalikan">
+                                    <button type="submit" class="btn btn-warning w-100 text-start">
+                                        <i class="bi bi-arrow-counterclockwise"></i> 
+                                        <strong>Kembalikan ke Pendaftaran</strong>
+                                        <br>
+                                        <small class="text-dark">Hapus pemeriksaan, status pendaftaran kembali ke "menunggu"</small>
+                                    </button>
+                                </form>
+
+                                <!-- Opsi 2: Hapus semua -->
+                                <form action="{{ route('pemeriksaan.destroy', $pemeriksaan->id_pemeriksaan) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="aksi" value="hapus_semua">
+                                    <button type="submit" class="btn btn-danger w-100 text-start">
+                                        <i class="bi bi-trash"></i> 
+                                        <strong>Hapus Semua</strong>
+                                        <br>
+                                        <small>Hapus pemeriksaan beserta data pendaftarannya</small>
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+    @endforeach
+@endif
 @endsection

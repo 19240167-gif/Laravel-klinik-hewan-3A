@@ -41,13 +41,13 @@ class PemeriksaanController extends Controller
                     ->with('error', 'Data dokter tidak ditemukan');
             }
             
-            $pemeriksaans = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'pendaftaran.hewan', 'dokterHewan'])
+            $pemeriksaans = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'pendaftaran.hewan', 'dokterHewan', 'pembayaran'])
                 ->where('id_dokter', $dokter->id_dokter)
                 ->orderBy('tanggal_periksa', 'desc')
                 ->paginate(10);
         } else {
             // Admin bisa lihat semua riwayat
-            $pemeriksaans = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'pendaftaran.hewan', 'dokterHewan'])
+            $pemeriksaans = Pemeriksaan::with(['pendaftaran.pemilikHewan', 'pendaftaran.hewan', 'dokterHewan', 'pembayaran'])
                 ->orderBy('tanggal_periksa', 'desc')
                 ->paginate(10);
         }
@@ -216,19 +216,53 @@ class PemeriksaanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        $pemeriksaan = Pemeriksaan::findOrFail($id);
+        $pemeriksaan = Pemeriksaan::with(['pembayaran', 'obats'])->findOrFail($id);
         
-        // Kembalikan status pendaftaran ke 'menunggu'
-        $pendaftaran = Pendaftaran::find($pemeriksaan->id_pendaftaran);
-        if ($pendaftaran) {
-            $pendaftaran->update(['status' => 'menunggu']);
+        // Cek jika sudah ada pembayaran, tolak hapus
+        if ($pemeriksaan->pembayaran) {
+            return redirect()->route('pemeriksaan.riwayat')
+                ->with('error', 'Pemeriksaan tidak dapat dihapus karena sudah memiliki data pembayaran. Hapus pembayaran terlebih dahulu.');
         }
         
-        $pemeriksaan->delete();
-
-        return redirect()->route('pemeriksaan.riwayat')
-            ->with('success', 'Data pemeriksaan berhasil dihapus dan status pendaftaran dikembalikan ke menunggu');
+        $aksi = $request->input('aksi', 'kembalikan');
+        
+        DB::beginTransaction();
+        try {
+            $pendaftaran = Pendaftaran::find($pemeriksaan->id_pendaftaran);
+            
+            // Kembalikan stok obat
+            foreach ($pemeriksaan->obats as $obat) {
+                $obat->increment('stok', $obat->pivot->jumlah);
+            }
+            
+            // Hapus pemeriksaan_obat pivot
+            $pemeriksaan->obats()->detach();
+            
+            if ($aksi === 'hapus_semua') {
+                $pemeriksaan->delete();
+                if ($pendaftaran) {
+                    $pendaftaran->delete();
+                }
+                
+                DB::commit();
+                return redirect()->route('pemeriksaan.riwayat')
+                    ->with('success', 'Data pemeriksaan dan pendaftaran berhasil dihapus');
+            } else {
+                $pemeriksaan->delete();
+                if ($pendaftaran) {
+                    $pendaftaran->update(['status' => 'menunggu']);
+                }
+                
+                DB::commit();
+                return redirect()->route('pemeriksaan.riwayat')
+                    ->with('success', 'Data pemeriksaan berhasil dihapus dan status pendaftaran dikembalikan ke menunggu');
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('pemeriksaan.riwayat')
+                ->with('error', 'Gagal menghapus pemeriksaan: ' . $e->getMessage());
+        }
     }
 }
